@@ -1,7 +1,7 @@
 import React from 'react';
 import { Home, Search, ShoppingBag, User, ShieldCheck } from 'lucide-react';
-import { View } from '../types';
-import { useStore } from '../context/StoreContext';
+import { View } from '../src/types';
+import { useStore } from '../src/context/StoreContext';
 
 interface LayoutProps {
   children: React.ReactNode;

@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
-import { StoreProvider, useStore } from './context/StoreContext';
+import { StoreProvider, useStore } from './src/context/StoreContext';
 import Layout from './components/Layout';
 import Home from './views/Home';
 import Search from './views/Search';
 import Cart from './views/Cart';
 import Profile from './views/Profile';
 import Admin from './views/Admin';
-import { View } from './types';
+import { View } from './src/types';
 
 const AppContent: React.FC = () => {
-  const { user } = useStore();
+  const { user, loading } = useStore();
   const [currentView, setCurrentView] = useState<View>(View.HOME);
 
-  // Simple loading state while verifying Telegram User
-  if (!user) {
+  // Show loading state while initializing
+  if (loading || !user) {
       return (
         <div className="flex items-center justify-center h-screen bg-neutral-950 text-white">
             <div className="flex flex-col items-center gap-4">

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Plus, Trash2 } from 'lucide-react';
-import { Product } from '../types';
-import { useStore } from '../context/StoreContext';
+import { Product } from '../src/types';
+import { useStore } from '../src/context/StoreContext';
 
 interface ProductCardProps {
   product: Product;
@@ -11,6 +11,15 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, isAdminView = false }) => {
   const { removeProduct } = useStore();
+
+  const handleRemove = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      await removeProduct(product.id);
+    } catch (error) {
+      alert('Failed to remove product');
+    }
+  };
 
   return (
     <div className="bg-neutral-900 rounded-xl overflow-hidden shadow-sm border border-neutral-800 flex flex-col h-full relative group">
@@ -29,10 +38,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, isAdmin
         )}
         {isAdminView && (
             <button 
-                onClick={(e) => {
-                    e.stopPropagation();
-                    removeProduct(product.id);
-                }}
+                onClick={handleRemove}
                 className="absolute top-2 right-2 bg-neutral-950/80 p-2 rounded-full text-white hover:bg-red-600 transition-colors"
             >
                 <Trash2 size={16} />

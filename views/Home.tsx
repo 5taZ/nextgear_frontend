@@ -1,5 +1,5 @@
 import React from 'react';
-import { useStore } from '../context/StoreContext';
+import { useStore } from '../src/context/StoreContext';
 import ProductCard from '../components/ProductCard';
 
 const Home: React.FC = () => {
