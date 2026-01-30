@@ -1,30 +1,31 @@
 import React from 'react';
 import { Trash2, ShoppingBag, ArrowRight, CheckCircle } from 'lucide-react';
-import { useStore } from '../context/StoreContext';
+import { useStore } from '../src/context/StoreContext';
 
 const Cart: React.FC = () => {
   const { cart, removeFromCart, clearCart, placeOrder } = useStore();
 
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (cart.length === 0) return;
 
-    // Place internal order
-    placeOrder();
+    try {
+      await placeOrder();
 
-    // Show native Telegram popup or alert
-    const tg = (window as any).Telegram?.WebApp;
-    
-    // showPopup requires Web App version 6.2+
-    if (tg && tg.isVersionAtLeast && tg.isVersionAtLeast('6.2')) {
-        tg.showPopup({ 
-            title: 'Order Placed', 
-            message: 'Your order has been sent to the admin for processing. Wait for confirmation.' 
-        });
-    } else {
-        // Fallback for older Telegram clients or web browsers
-        alert("Order placed successfully! Waiting for admin confirmation.");
+      const tg = (window as any).Telegram?.WebApp;
+      
+      if (tg && tg.isVersionAtLeast && tg.isVersionAtLeast('6.2')) {
+          tg.showPopup({ 
+              title: 'Order Placed', 
+              message: 'Your order has been sent to the admin for processing. Wait for confirmation.' 
+          });
+      } else {
+          alert("Order placed successfully! Waiting for admin confirmation.");
+      }
+    } catch (error) {
+      console.error('Failed to place order:', error);
+      alert('Failed to place order. Please try again.');
     }
   };
 

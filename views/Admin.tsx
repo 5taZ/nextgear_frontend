@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, X, Info, Package, ClipboardList, Check, Ban, CheckCircle, AlertCircle } from 'lucide-react';
-import { useStore } from '../context/StoreContext';
+import { useStore } from '../src/context/StoreContext';
 import ProductCard from '../components/ProductCard';
-import { OrderStatus } from '../types';
+import { OrderStatus } from '../src/types';
 
 enum AdminTab {
     INVENTORY = 'INVENTORY',
@@ -36,37 +36,47 @@ const Admin: React.FC = () => {
     }
   }, [notification]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newItem.name || !newItem.price) return;
 
-    addProduct({
-        id: Date.now().toString(),
-        name: newItem.name,
-        price: Number(newItem.price),
-        image: newItem.image || 'https://picsum.photos/400/400',
-        category: newItem.category || 'General',
-        description: newItem.description || 'No description',
-        inStock: newItem.inStock
-    });
+    try {
+      await addProduct({
+          id: Date.now().toString(),
+          name: newItem.name,
+          price: Number(newItem.price),
+          image: newItem.image || 'https://picsum.photos/400/400',
+          category: newItem.category || 'General',
+          description: newItem.description || 'No description',
+          inStock: newItem.inStock
+      });
 
-    setNewItem({ name: '', price: '', image: '', category: '', description: '', inStock: true });
-    setIsAdding(false);
-    setNotification({ message: 'Item added to inventory successfully', type: 'success' });
+      setNewItem({ name: '', price: '', image: '', category: '', description: '', inStock: true });
+      setIsAdding(false);
+      setNotification({ message: 'Item added to inventory successfully', type: 'success' });
+    } catch (error) {
+      console.error('Failed to add product:', error);
+      setNotification({ message: 'Failed to add item. Please try again.', type: 'error' });
+    }
   };
 
-  const handleProcessOrder = (orderId: string, approved: boolean, items: any[]) => {
-    processOrder(orderId, approved);
-    if (approved) {
-        setNotification({
-            message: `Order confirmed! ${items.length} items removed from inventory.`,
-            type: 'success'
-        });
-    } else {
-        setNotification({
-            message: 'Order rejected and cancelled.',
-            type: 'error'
-        });
+  const handleProcessOrder = async (orderId: string, approved: boolean, items: any[]) => {
+    try {
+      await processOrder(orderId, approved);
+      if (approved) {
+          setNotification({
+              message: `Order confirmed! ${items.length} items removed from inventory.`,
+              type: 'success'
+          });
+      } else {
+          setNotification({
+              message: 'Order rejected and cancelled.',
+              type: 'error'
+          });
+      }
+    } catch (error) {
+      console.error('Failed to process order:', error);
+      setNotification({ message: 'Failed to process order. Please try again.', type: 'error' });
     }
   };
 

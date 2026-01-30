@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { Search as SearchIcon, Send, PackageSearch, Filter, Check } from 'lucide-react';
-import { useStore } from '../context/StoreContext';
+import { useStore } from '../src/context/StoreContext';
 import ProductCard from '../components/ProductCard';
-import { ADMIN_TELEGRAM_USERNAME } from '../types';
+import { ADMIN_TELEGRAM_USERNAME } from '../src/types';
 
 const Search: React.FC = () => {
   const { products, user, addToCart } = useStore();
@@ -34,13 +34,11 @@ const Search: React.FC = () => {
     e.preventDefault();
     if (!preOrderName.trim()) return;
 
-    // Проверяем, что user существует
     if (!user) {
       alert('Please sign in to submit a pre-order request.');
       return;
     }
 
-    // Construct message: "Pre-order: [Name], Photo: [Link], User: [Username]"
     const message = `🛍 *NEW PRE-ORDER REQUEST* %0A%0A📦 *Item:* ${preOrderName} %0A📸 *Photo:* ${preOrderPhoto || 'No photo provided'} %0A👤 *User:* @${user.username}`;
     
     // Simulate sending to admin

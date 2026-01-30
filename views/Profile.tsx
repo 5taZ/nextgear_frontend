@@ -1,7 +1,7 @@
 import React from 'react';
 import { Copy, Clock, CheckCircle, XCircle, Package } from 'lucide-react';
-import { useStore } from '../context/StoreContext';
-import { OrderStatus } from '../types';
+import { useStore } from '../src/context/StoreContext';
+import { OrderStatus } from '../src/types';
 
 const Profile: React.FC = () => {
   const { user, orders } = useStore();
@@ -9,15 +9,13 @@ const Profile: React.FC = () => {
   if (!user) return null;
 
   const userOrders = orders
-    .filter(order => order.userId === user.username)
+    .filter(order => order.userId === user.username || order.userId === user.id.toString())
     .sort((a, b) => b.date - a.date);
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(user.referralLink);
-    // Use Telegram native alert if possible, otherwise browser alert
     const tg = (window as any).Telegram?.WebApp;
     
-    // showPopup requires Web App version 6.2+
     if (tg && tg.isVersionAtLeast && tg.isVersionAtLeast('6.2')) {
         tg.showPopup({ title: 'Success', message: 'Referral link copied to clipboard!' });
     } else {
