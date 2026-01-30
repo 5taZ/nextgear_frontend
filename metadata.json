@@ -1,0 +1,5 @@
+{
+  "name": "ResellHub",
+  "description": "A premium resale assistance platform for Telegram. Manage inventory, process pre-orders, and handle cart operations with direct Telegram Admin integration.",
+  "requestFramePermissions": []
+}
